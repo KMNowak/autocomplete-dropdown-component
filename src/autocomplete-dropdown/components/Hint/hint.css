@@ -1,0 +1,8 @@
+.hint {
+  cursor: pointer;
+  transition: background-color ease-in-out 150ms;
+}
+
+.hint:hover {
+  background-color: lightblue;
+}
