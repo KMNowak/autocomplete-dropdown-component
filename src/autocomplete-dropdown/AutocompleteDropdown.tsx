@@ -1,49 +1,61 @@
-import type { ChangeEvent, FunctionComponent } from 'react';
-import { useCallback, useState } from 'react';
+import './autocomplete-dropdown.css';
 
+import type { CSSProperties, FunctionComponent, ReactElement } from 'react';
+
+import { RequestState } from '../types';
 import { Hint } from './components/Hint';
-import { useFetchSuggestions } from './useFetchSuggestions';
+import { useFetchSuggestions } from './hooks/useFetchSuggestions';
+import { useManageAutocomplete } from './hooks/useManageAutocomplete';
 
-// TODO: pass down fetcher and mapper to autocomplete
-export const AutocompleteDropdown: FunctionComponent = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [blurEnabled, setBlurEnabled] = useState(true);
-  const suggestions = useFetchSuggestions({ inputValue });
+interface AutocompleteDropdownProps {
+  fetcher: (value: string) => Promise<Response>;
+  placeholder?: string;
+  inputStyle?: CSSProperties;
+  LoaderComponent?: () => ReactElement;
+  ErrorComponent?: () => ReactElement;
+  hintProps?: {
+    highlightStyle?: CSSProperties;
+    textStyle?: CSSProperties;
+  };
+}
 
-  console.log('[DEBUG] suggestions:', suggestions);
+export const AutocompleteDropdown: FunctionComponent<
+  AutocompleteDropdownProps
+> = ({
+  placeholder,
+  fetcher,
+  inputStyle,
+  LoaderComponent,
+  ErrorComponent,
+  hintProps,
+}) => {
+  const {
+    handleOnInputChange,
+    handleOnInputFocus,
+    handleOnInputBlur,
+    inputValue,
+    handleOnHintMouseDown,
+    handleOnHintClick,
+    showDropdown,
+  } = useManageAutocomplete();
+  const { suggestions, fetchStatus } = useFetchSuggestions({
+    inputValue,
+    fetcher,
+  });
 
-  const handleOnInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setInputValue(e.target.value);
-    },
-    []
-  );
-
-  const handleOnInputFocus = () => {
-    setBlurEnabled(true);
-    if (suggestions.length > 0) {
-      setShowDropdown(true);
+  const renderContent = () => {
+    if (fetchStatus === RequestState.LOADING && showDropdown) {
+      return LoaderComponent ? <LoaderComponent /> : <div>Loading...</div>;
     }
-    // TODO: refetch on focus
-  };
 
-  const handleHintClick = (value: string) => {
-    setInputValue(value);
-    setShowDropdown(false);
-  };
-
-  const handleOnInputBlur = () => {
-    if (blurEnabled) {
-      setShowDropdown(false);
+    if (fetchStatus === RequestState.ERROR && showDropdown) {
+      return ErrorComponent ? (
+        <ErrorComponent />
+      ) : (
+        <div>An error occurred. Please try again.</div>
+      );
     }
-  };
 
-  const handleOnHintMouseDown = () => {
-    setBlurEnabled(false);
-  };
-
-  const renderDropdown = () => {
     if (!showDropdown || !suggestions.length) {
       return null;
     }
@@ -52,22 +64,29 @@ export const AutocompleteDropdown: FunctionComponent = () => {
       <Hint
         key={hint.rawText}
         content={hint}
-        onClick={() => handleHintClick(hint.rawText)}
+        onItemClick={handleOnHintClick}
         onMouseDown={handleOnHintMouseDown}
+        highlightStyle={hintProps?.highlightStyle}
+        textStyle={hintProps?.textStyle}
       />
     ));
   };
 
+  // TODO: A11y
+
   return (
-    <div>
+    <div className={'autocomplete'}>
       <input
+        className={'input'}
         type={'text'}
+        placeholder={placeholder}
         value={inputValue}
         onChange={handleOnInputChange}
         onBlur={handleOnInputBlur}
         onFocus={handleOnInputFocus}
+        style={inputStyle}
       />
-      {renderDropdown()}
+      <div className={'dropdown'}>{renderContent()}</div>
     </div>
   );
 };

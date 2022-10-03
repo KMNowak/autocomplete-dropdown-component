@@ -1,5 +1,5 @@
-import type { HighlightMatchingTextOutput } from './types';
-import { highlightMatchingText } from './utils';
+import type { GetHighlightTextOutput } from './types';
+import { getHighlightText } from './utils';
 
 describe('utils', () => {
   describe('highlightMatchingText', () => {
@@ -7,7 +7,7 @@ describe('utils', () => {
       const rawText = 'abcde';
       const input = 'bcd';
 
-      const expectedResult: HighlightMatchingTextOutput = {
+      const expectedResult: GetHighlightTextOutput = {
         rawText,
         highlights: [
           { text: 'a', isHighlighted: false },
@@ -16,7 +16,7 @@ describe('utils', () => {
         ],
       };
 
-      const res = highlightMatchingText(input, rawText);
+      const res = getHighlightText(input, rawText);
 
       expect(res).toMatchObject(expectedResult);
     });
@@ -25,12 +25,12 @@ describe('utils', () => {
       const rawText = 'abcde';
       const input = '';
 
-      const expectedResult: HighlightMatchingTextOutput = {
+      const expectedResult: GetHighlightTextOutput = {
         rawText,
         highlights: [],
       };
 
-      const res = highlightMatchingText(input, rawText);
+      const res = getHighlightText(input, rawText);
 
       expect(res).toMatchObject(expectedResult);
     });

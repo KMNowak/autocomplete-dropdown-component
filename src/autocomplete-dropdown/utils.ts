@@ -1,17 +1,17 @@
-import type { HighlightMatchingTextOutput } from './types';
+import type { GetHighlightTextOutput } from './types';
 
-export const highlightMatchingText = (
+export const getHighlightText = (
   searchValue: string,
   rawText: string
-): HighlightMatchingTextOutput => {
+): GetHighlightTextOutput => {
   if (!searchValue.length) {
     return {
       rawText,
       highlights: [],
     };
   }
-
-  const regex = new RegExp(`(${searchValue})`, 'gi');
+  // TODO: optionally handle spaces in highlighting
+  const regex = new RegExp(`(${searchValue.trim()})`, 'gi');
   const splitText = rawText.split(regex);
 
   return {

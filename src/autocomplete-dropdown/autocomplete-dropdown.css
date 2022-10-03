@@ -1,0 +1,14 @@
+.autocomplete {
+  width: 100%;
+  max-width: 400px;
+}
+
+.input {
+  width: 100%;
+}
+
+.autocomplete .dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}

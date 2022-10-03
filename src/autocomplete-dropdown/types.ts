@@ -1,4 +1,4 @@
-export interface HighlightMatchingTextOutput {
+export interface GetHighlightTextOutput {
   rawText: string;
   highlights: Highlight[];
 }
