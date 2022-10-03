@@ -1,6 +1,6 @@
 import './autocomplete-dropdown.css';
 
-import type { CSSProperties, FunctionComponent, ReactElement } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 
 import { RequestState } from '../types';
 import { Hint } from './components/Hint';
@@ -19,16 +19,14 @@ interface AutocompleteDropdownProps {
   };
 }
 
-export const AutocompleteDropdown: FunctionComponent<
-  AutocompleteDropdownProps
-> = ({
+export const AutocompleteDropdown = <T extends Record<string, any>>({
   placeholder,
   fetcher,
   inputStyle,
   LoaderComponent,
   ErrorComponent,
   hintProps,
-}) => {
+}: AutocompleteDropdownProps) => {
   const {
     handleOnInputChange,
     handleOnInputFocus,
@@ -38,31 +36,36 @@ export const AutocompleteDropdown: FunctionComponent<
     handleOnHintClick,
     showDropdown,
   } = useManageAutocomplete();
-  const { suggestions, fetchStatus } = useFetchSuggestions({
+  const { suggestions, fetchStatus } = useFetchSuggestions<T>({
     inputValue,
     fetcher,
+    searchProperty: 'name',
   });
 
   const renderContent = () => {
     if (fetchStatus === RequestState.LOADING && showDropdown) {
-      return LoaderComponent ? <LoaderComponent /> : <div>Loading...</div>;
+      return LoaderComponent ? (
+        <LoaderComponent />
+      ) : (
+        <div className={'loader'}>Loading...</div>
+      );
     }
 
     if (fetchStatus === RequestState.ERROR && showDropdown) {
       return ErrorComponent ? (
         <ErrorComponent />
       ) : (
-        <div>An error occurred. Please try again.</div>
+        <div className={'error'}>An error occurred. Please try again.</div>
       );
     }
 
-    if (!showDropdown || !suggestions.length) {
+    if (!showDropdown || !suggestions.length || !inputValue.length) {
       return null;
     }
 
-    return suggestions.map((hint) => (
+    return suggestions.map((hint, idx) => (
       <Hint
-        key={hint.rawText}
+        key={`${hint.rawText}-${idx}`}
         content={hint}
         onItemClick={handleOnHintClick}
         onMouseDown={handleOnHintMouseDown}

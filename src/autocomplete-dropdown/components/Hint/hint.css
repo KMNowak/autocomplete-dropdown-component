@@ -1,15 +1,16 @@
 .hint {
   cursor: pointer;
+  width: 100%;
   transition: background-color ease-in-out 150ms;
-  padding: 0.25rem;
-  border-radius: 4px;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--gray-1);
 }
 
 .hint .highlighted {
-  background-color: yellow;
+  background-color: var(--highlight-text);
   font-weight: bold;
 }
 
 .hint:hover {
-  background-color: lightblue;
+  background-color: var(--highlight-item);
 }

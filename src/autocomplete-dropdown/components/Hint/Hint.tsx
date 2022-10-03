@@ -6,7 +6,6 @@ import { useCallback } from 'react';
 import type { GetHighlightTextOutput } from '../../types';
 
 // TODO: pass variables colors
-// TODO: pass customization props
 interface HintProps {
   content: GetHighlightTextOutput;
   onItemClick: (value: string) => void;
@@ -30,23 +29,15 @@ export const Hint: FC<HintProps> = ({
 
   return (
     <div className={'hint'} onClick={handleClick} onMouseDown={onMouseDown}>
-      <>
-        {highlights.map(({ isHighlighted, text }, idx) =>
-          isHighlighted ? (
-            <span
-              key={`${text}-${idx}`}
-              className={'highlighted'}
-              style={{ ...textStyle, ...highlightStyle }}
-            >
-              {text}
-            </span>
-          ) : (
-            <span key={`${text}-${idx}`} style={textStyle}>
-              {text}
-            </span>
-          )
-        )}
-      </>
+      {highlights.map(({ isHighlighted, text }, idx) => (
+        <span
+          key={`${text}-${idx}`}
+          className={isHighlighted ? 'highlighted' : undefined}
+          style={{ ...textStyle, ...highlightStyle }}
+        >
+          {text}
+        </span>
+      ))}
     </div>
   );
 };

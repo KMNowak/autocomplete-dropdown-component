@@ -1,26 +1,29 @@
 import { useEffect, useState } from 'react';
 
-import type { Person } from '../../models/person.interface';
 import { RequestState } from '../../types';
 import { useDebounce } from '../../useDebounce';
 import { getHighlightText } from '../utils';
 
-interface UseFetchSuggestionsProps {
+interface UseFetchSuggestionsProps<T extends Record<string, any>> {
   inputValue: string;
-  fetcher: <T extends any>(value: string) => Promise<Response>;
+  fetcher: (value: string) => Promise<Response>;
+  searchProperty: keyof T;
 }
 
-export const useFetchSuggestions = ({
+export const useFetchSuggestions = <T extends Record<string, any>>({
   inputValue,
   fetcher,
-}: UseFetchSuggestionsProps) => {
+  searchProperty,
+}: UseFetchSuggestionsProps<T>) => {
   const [fetchStatus, setFetchStatus] = useState(RequestState.INIT);
   const [suggestions, setSuggestions] = useState([]);
   const searchValue = useDebounce(inputValue);
 
   useEffect(() => {
     (async () => {
-      if (searchValue.length) {
+      if (!searchValue.length) {
+        setSuggestions([]);
+      } else {
         setFetchStatus(RequestState.LOADING);
         const res = await fetcher(searchValue);
 
@@ -30,7 +33,7 @@ export const useFetchSuggestions = ({
           return;
         }
         const data = await res.json();
-        const names = data.results.map(({ name }: Person) => name);
+        const names = data.results.map((result: T) => result[searchProperty]);
 
         setFetchStatus(RequestState.SUCCESS);
         setSuggestions(names);
