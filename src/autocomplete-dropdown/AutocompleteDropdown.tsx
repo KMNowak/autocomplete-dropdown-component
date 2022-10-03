@@ -47,9 +47,9 @@ export const AutocompleteDropdown: FunctionComponent = () => {
 
     return suggestions.map((hint) => (
       <Hint
-        key={hint}
+        key={hint.rawText}
         content={hint}
-        onClick={() => handleHintClick(hint)}
+        onClick={() => handleHintClick(hint.rawText)}
         onMouseDown={handleOnHintMouseDown}
       />
     ));

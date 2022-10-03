@@ -1,5 +1,9 @@
-export const useFetchSuggestions = (_inputValue: string) => {
-  // TODO: fetch by inputValue
+import { highlightMatchingText } from './utils';
 
-  return ['sugg1', 'sugg2'];
+export const useFetchSuggestions = (inputValue: string) => {
+  const suggestions = ['abcd', 'cdef'];
+
+  return suggestions.map((suggestion) =>
+    highlightMatchingText(inputValue, suggestion)
+  );
 };
