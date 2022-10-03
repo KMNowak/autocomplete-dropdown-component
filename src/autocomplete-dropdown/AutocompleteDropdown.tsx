@@ -4,11 +4,14 @@ import { useCallback, useState } from 'react';
 import { Hint } from './components/Hint';
 import { useFetchSuggestions } from './useFetchSuggestions';
 
+// TODO: pass down fetcher and mapper to autocomplete
 export const AutocompleteDropdown: FunctionComponent = () => {
   const [inputValue, setInputValue] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [blurEnabled, setBlurEnabled] = useState(true);
-  const suggestions = useFetchSuggestions(inputValue);
+  const suggestions = useFetchSuggestions({ inputValue });
+
+  console.log('[DEBUG] suggestions:', suggestions);
 
   const handleOnInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

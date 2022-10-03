@@ -4,6 +4,7 @@ import type { FC } from 'react';
 
 import type { Highlight, HighlightMatchingTextOutput } from '../../types';
 
+// TODO: pass customization props
 interface HintProps {
   content: HighlightMatchingTextOutput;
   onClick: () => void;
