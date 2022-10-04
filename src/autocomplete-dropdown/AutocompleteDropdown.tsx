@@ -7,8 +7,13 @@ import { Hint } from './components/Hint';
 import { useFetchSuggestions } from './hooks/useFetchSuggestions';
 import { useManageAutocomplete } from './hooks/useManageAutocomplete';
 
-interface AutocompleteDropdownProps {
-  fetcher: (value: string) => Promise<Response>;
+interface AutocompleteDropdownProps<T extends Record<string, any>> {
+  inputValue: string;
+  onChange: (newValue: string) => void;
+  fetchProps: {
+    fetcher: (value: string) => Promise<Response>;
+    searchProperty: keyof T;
+  };
   placeholder?: string;
   inputStyle?: CSSProperties;
   LoaderComponent?: () => ReactElement;
@@ -20,26 +25,27 @@ interface AutocompleteDropdownProps {
 }
 
 export const AutocompleteDropdown = <T extends Record<string, any>>({
+  inputValue,
+  onChange,
   placeholder,
-  fetcher,
+  fetchProps: { fetcher, searchProperty },
   inputStyle,
   LoaderComponent,
   ErrorComponent,
   hintProps,
-}: AutocompleteDropdownProps) => {
+}: AutocompleteDropdownProps<T>) => {
   const {
     handleOnInputChange,
     handleOnInputFocus,
     handleOnInputBlur,
-    inputValue,
     handleOnHintMouseDown,
     handleOnHintClick,
     showDropdown,
-  } = useManageAutocomplete();
+  } = useManageAutocomplete(onChange);
   const { suggestions, fetchStatus } = useFetchSuggestions<T>({
     inputValue,
     fetcher,
-    searchProperty: 'name',
+    searchProperty,
   });
 
   const renderContent = () => {

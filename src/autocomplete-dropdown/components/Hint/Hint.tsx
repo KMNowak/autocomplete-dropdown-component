@@ -28,7 +28,12 @@ export const Hint: FC<HintProps> = ({
   }, [rawText, onItemClick]);
 
   return (
-    <div className={'hint'} onClick={handleClick} onMouseDown={onMouseDown}>
+    <div
+      className={'hint'}
+      onClick={handleClick}
+      onMouseDown={onMouseDown}
+      role="option"
+    >
       {highlights.map(({ isHighlighted, text }, idx) => (
         <span
           key={`${text}-${idx}`}

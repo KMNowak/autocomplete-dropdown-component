@@ -1,14 +1,13 @@
 import type { ChangeEvent } from 'react';
 import { useCallback, useState } from 'react';
 
-export const useManageAutocomplete = () => {
-  const [inputValue, setInputValue] = useState('');
+export const useManageAutocomplete = (onChange: (value: string) => void) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [blurEnabled, setBlurEnabled] = useState(true);
 
   const handleOnInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setInputValue(e.target.value);
+      onChange(e.target.value);
     },
     []
   );
@@ -25,7 +24,7 @@ export const useManageAutocomplete = () => {
   };
 
   const handleOnHintClick = useCallback((value: string) => {
-    setInputValue(value);
+    onChange(value);
     setShowDropdown(false);
   }, []);
 
@@ -34,7 +33,6 @@ export const useManageAutocomplete = () => {
   }, []);
 
   return {
-    inputValue,
     showDropdown,
 
     handleOnInputChange,
