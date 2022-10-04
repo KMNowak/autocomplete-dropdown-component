@@ -5,7 +5,6 @@ import { useCallback } from 'react';
 
 import type { GetHighlightTextOutput } from '../../types';
 
-// TODO: pass variables colors
 interface HintProps {
   content: GetHighlightTextOutput;
   onItemClick: (value: string) => void;

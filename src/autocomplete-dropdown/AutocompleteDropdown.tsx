@@ -81,8 +81,6 @@ export const AutocompleteDropdown = <T extends Record<string, any>>({
     ));
   };
 
-  // TODO: A11y
-
   return (
     <div className={'autocomplete'}>
       <input
