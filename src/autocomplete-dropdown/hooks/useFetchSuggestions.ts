@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import { RequestState } from '../../types';
-import { useDebounce } from '../../useDebounce';
 import { getHighlightText } from '../utils';
 
 interface UseFetchSuggestionsProps<T extends Record<string, any>> {
@@ -17,15 +16,14 @@ export const useFetchSuggestions = <T extends Record<string, any>>({
 }: UseFetchSuggestionsProps<T>) => {
   const [fetchStatus, setFetchStatus] = useState(RequestState.INIT);
   const [suggestions, setSuggestions] = useState([]);
-  const searchValue = useDebounce(inputValue);
 
   useEffect(() => {
     (async () => {
-      if (!searchValue.length) {
+      if (!inputValue.length) {
         setSuggestions([]);
       } else {
         setFetchStatus(RequestState.LOADING);
-        const res = await fetcher(searchValue);
+        const res = await fetcher(inputValue);
 
         if (!res.ok) {
           setFetchStatus(RequestState.ERROR);
@@ -39,11 +37,11 @@ export const useFetchSuggestions = <T extends Record<string, any>>({
         setSuggestions(names);
       }
     })();
-  }, [searchValue]);
+  }, [inputValue]);
 
   return {
     suggestions: suggestions.map((suggestion) =>
-      getHighlightText(searchValue, suggestion)
+      getHighlightText(inputValue, suggestion)
     ),
     fetchStatus,
   };
